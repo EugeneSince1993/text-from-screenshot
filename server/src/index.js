@@ -4,7 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import router from './routes/index.js';
 
-let port = process.env.PORT || 6000;
+let port = process.env.PORT || 5001;
 
 const main = async () => {
   const app = express();
