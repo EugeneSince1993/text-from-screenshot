@@ -22,7 +22,7 @@ export const TextFromScreenshot = () => {
   const postScreenshot = async () => {
     const { data } = await axios({
       method: 'post',
-      url: 'http://localhost:5000/api/screenshot',
+      url: 'http://localhost:6000/api/screenshot',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
