@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "text-from-screenshot",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
