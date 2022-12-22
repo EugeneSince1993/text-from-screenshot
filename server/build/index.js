@@ -25,9 +25,9 @@ var main = /*#__PURE__*/function () {
             app.use((0, _cors["default"])());
             app.use('/api', _index["default"]);
             if (process.env.NODE_ENV === 'production') {
-              app.use(_express["default"]["static"]('./../../client/build'));
-              app.get('*', function (req, res) {
-                res.sendFile(path.resolve(__dirname, './../../client', 'build', 'index.html'));
+              app.use(_express["default"]["static"]('./../client/build'));
+              app.get('/*', function (req, res) {
+                res.sendFile(path.resolve(__dirname, './../client', 'build', 'index.html'));
               });
             }
             app.listen(port, function () {
