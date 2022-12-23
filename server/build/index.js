@@ -1,9 +1,15 @@
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.iam_token = void 0;
 var dotenv = _interopRequireWildcard(require("dotenv"));
 var _express = _interopRequireDefault(require("express"));
 var _cors = _interopRequireDefault(require("cors"));
+var _axios = _interopRequireDefault(require("axios"));
+var _cron = _interopRequireDefault(require("cron"));
 var _index = _interopRequireDefault(require("./routes/index.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -12,36 +18,71 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 dotenv.config();
+var CronJob = _cron["default"].CronJob;
 var port = process.env.PORT || 5001;
+var iam_token;
+exports.iam_token = iam_token;
 var main = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var app;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var app, getIAMtoken, job;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             app = (0, _express["default"])();
             app.use(_express["default"].json());
             app.use((0, _cors["default"])());
             app.use('/api', _index["default"]);
-
-            // if (process.env.NODE_ENV === 'production') {
-            //   app.use(express.static('./../client/build'));
-
-            //   app.get('/*', (req, res) => {
-            //     res.sendFile(path.resolve(__dirname, './../client', 'build', 'index.html'));
-            //   });
-            // }  
-
+            getIAMtoken = /*#__PURE__*/function () {
+              var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                var _yield$axios$get, data;
+                return _regeneratorRuntime().wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        _context.next = 2;
+                        return _axios["default"].get("https://functions.yandexcloud.net/d4elbljl4172vcrh4k8l");
+                      case 2:
+                        _yield$axios$get = _context.sent;
+                        data = _yield$axios$get.data;
+                        exports.iam_token = iam_token = data.access_token;
+                      case 5:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }
+                }, _callee);
+              }));
+              return function getIAMtoken() {
+                return _ref2.apply(this, arguments);
+              };
+            }();
+            getIAMtoken().then(function () {
+              console.log('iam token received at the first time: ', iam_token);
+            });
+            console.log('Before job instantiation');
+            job = new CronJob('0 * * * *', function () {
+              getIAMtoken().then(function () {
+                console.log('iam token received every hour: ', iam_token);
+              });
+            });
+            console.log('After job instantiation');
+            job.start();
+            if (process.env.NODE_ENV === 'production') {
+              app.use(_express["default"]["static"]('./../client/build'));
+              app.get('/*', function (req, res) {
+                res.sendFile(path.resolve(__dirname, './../client', 'build', 'index.html'));
+              });
+            }
             app.listen(port, function () {
               console.log("Server OK, port ".concat(port));
             });
-          case 5:
+          case 12:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
   return function main() {
     return _ref.apply(this, arguments);

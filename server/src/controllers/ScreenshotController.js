@@ -1,7 +1,8 @@
 import fs from 'fs';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import _ from "lodash";
+import axios from 'axios';
+import { iam_token } from './../index.js';
 
 export const convertToText = (req, res) => {
   try {
@@ -11,13 +12,6 @@ export const convertToText = (req, res) => {
     const textFileUniqueName = uuidv4() + ".txt";
 
     let words;
-    let iam_token;
-
-    const getIAMtoken = async () => {
-      const { data } = await axios.get("https://functions.yandexcloud.net/d4elbljl4172vcrh4k8l");
-      console.log(data.access_token);
-      iam_token = data.access_token;
-    };
     
     const postData = {
       "folderId": "b1ghes9ctqpav3e6l72l",
@@ -33,8 +27,6 @@ export const convertToText = (req, res) => {
     };
 
     const makePostRequest = async () => {
-      await getIAMtoken();
-
       const { data } = await axios({
         method: 'post',
         url: 'https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze',
