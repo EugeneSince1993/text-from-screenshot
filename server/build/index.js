@@ -24,16 +24,19 @@ var main = /*#__PURE__*/function () {
             app.use(_express["default"].json());
             app.use((0, _cors["default"])());
             app.use('/api', _index["default"]);
-            if (process.env.NODE_ENV === 'production') {
-              app.use(_express["default"]["static"]('./../client/build'));
-              app.get('/*', function (req, res) {
-                res.sendFile(path.resolve(__dirname, './../client', 'build', 'index.html'));
-              });
-            }
+
+            // if (process.env.NODE_ENV === 'production') {
+            //   app.use(express.static('./../client/build'));
+
+            //   app.get('/*', (req, res) => {
+            //     res.sendFile(path.resolve(__dirname, './../client', 'build', 'index.html'));
+            //   });
+            // }  
+
             app.listen(port, function () {
               console.log("Server OK, port ".concat(port));
             });
-          case 6:
+          case 5:
           case "end":
             return _context.stop();
         }
